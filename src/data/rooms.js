@@ -1,3 +1,4 @@
+import { img } from '../utils/img.js'
 /**
  * Room catalogue + floor-plan layout.
  *
@@ -17,8 +18,8 @@ export const roomTypes = [
     guests: 2,
     bed: '1 Queen bed',
     photos: [
-      'https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=900&q=80',
-      'https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=900&q=80',
+      img('photo-1611892440504-42a792e24d32.jpg'),
+      img('photo-1618773928121-c32242e63f39.jpg'),
     ],
     facilities: ['wifi', 'bed', 'spa', 'clock'],
     facilityLabels: ['Fast Wi-Fi', 'Queen bed', 'Rain shower', '24h service'],
@@ -35,8 +36,8 @@ export const roomTypes = [
     guests: 2,
     bed: '1 King bed',
     photos: [
-      'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&q=80',
-      'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=900&q=80',
+      img('photo-1631049307264-da0ec9d70304.jpg'),
+      img('photo-1582719478250-c89cae4dc85b.jpg'),
     ],
     facilities: ['wifi', 'bed', 'glass', 'spa'],
     facilityLabels: ['Fast Wi-Fi', 'King bed', 'Mini bar', 'Soaking tub'],
@@ -53,8 +54,8 @@ export const roomTypes = [
     guests: 3,
     bed: '1 King + sofa bed',
     photos: [
-      'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=900&q=80',
-      'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=900&q=80',
+      img('photo-1590490360182-c33d57733427.jpg'),
+      img('photo-1560448204-e02f11c3d0e2.jpg'),
     ],
     facilities: ['wifi', 'bed', 'glass', 'pool'],
     facilityLabels: ['Fast Wi-Fi', 'King + sofa', 'Private terrace', 'Rooftop access'],
@@ -71,8 +72,8 @@ export const roomTypes = [
     guests: 1,
     bed: '1 Double bed',
     photos: [
-      'https://images.unsplash.com/photo-1505692952047-1a78307da8f2?w=900&q=80',
-      'https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=900&q=80',
+      img('photo-1505692952047-1a78307da8f2.jpg'),
+      img('photo-1560185007-cde436f6a4d0.jpg'),
     ],
     facilities: ['wifi', 'bed', 'clock'],
     facilityLabels: ['Fast Wi-Fi', 'Double bed', 'Desk nook'],

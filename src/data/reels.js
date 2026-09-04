@@ -2,16 +2,16 @@
  * Reels — the hotel's own advertisements, shown Instagram-style.
  *
  * DEMO VIDEOS LIVE IN THE REPO: drop your clips into `public/reels/` as
- * reel-1.mp4 … reel-5.mp4 (see public/reels/README.md). They're referenced with
- * BASE_URL so they work both locally and on GitHub Pages (which serves the app
- * under /<repo>/). Until a clip is added, each reel gracefully falls back to its
- * poster image with a slow Ken-Burns pan, so the feed always looks alive.
+ * reel-1.mp4 … reel-5.mp4 (see public/reels/README.md). Posters are local
+ * images (public/images/, via the shared `img` helper), so the feed works
+ * fully offline even before any video is added.
  *
  * `cta` links a reel to a real action inside the app (book a room, order, etc.).
  */
+import { img } from '../utils/img.js'
 
-// Vite serves everything in public/ at BASE_URL; string URLs aren't rewritten
-// automatically, so we build them here.
+// Vite serves public/reels/ at BASE_URL + "reels/"; string URLs aren't
+// rewritten automatically, so we build them here.
 const clip = (file) => `${import.meta.env.BASE_URL}reels/${file}`
 
 export const reels = [
@@ -19,7 +19,7 @@ export const reels = [
     id: 'r1',
     type: 'video',
     src: clip('reel-1.mp4'),
-    poster: 'https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=800&q=80',
+    poster: img('photo-1470337458703-46ad1756a187.jpg'),
     handle: 'theemberhouse',
     headline: 'The pub never really closes',
     caption: 'Late menu til 2am. Signature Old Fashioned, smoked to order. Pull up. 🥃',
@@ -33,7 +33,7 @@ export const reels = [
     id: 'r2',
     type: 'video',
     src: clip('reel-2.mp4'),
-    poster: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80',
+    poster: img('photo-1631049307264-da0ec9d70304.jpg'),
     handle: 'theemberhouse',
     headline: 'Wake up in the Lantern King',
     caption: 'Courtyard light, a soaking tub, and breakfast to the door. Book direct, skip the fees.',
@@ -47,7 +47,7 @@ export const reels = [
     id: 'r3',
     type: 'video',
     src: clip('reel-3.mp4'),
-    poster: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80',
+    poster: img('photo-1414235077428-338989a2e8c0.jpg'),
     handle: 'theemberhouse',
     headline: 'Dry-aged, flame-kissed',
     caption: 'The Ember Burger, straight to your room in 25. This is the one everyone films. 🔥',
@@ -61,7 +61,7 @@ export const reels = [
     id: 'r4',
     type: 'video',
     src: clip('reel-4.mp4'),
-    poster: 'https://images.unsplash.com/photo-1533104816931-20fa691ff6ca?w=800&q=80',
+    poster: img('photo-1533104816931-20fa691ff6ca.jpg'),
     handle: 'theemberhouse',
     headline: 'Rooftop hours',
     caption: 'Pool deck, golden hour, a spritz in hand. Loft Suite guests get first access. 🌅',
@@ -75,7 +75,7 @@ export const reels = [
     id: 'r5',
     type: 'video',
     src: clip('reel-5.mp4'),
-    poster: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80',
+    poster: img('photo-1414235077428-338989a2e8c0.jpg'),
     handle: 'theemberhouse',
     headline: 'Book a table by the fire',
     caption: 'Friday jazz, low light, a full pour. Reserve a spot before the weekend goes. 🎷',

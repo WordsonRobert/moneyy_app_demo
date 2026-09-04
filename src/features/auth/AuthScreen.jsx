@@ -5,6 +5,7 @@ import { requestOtp, confirmOtp, resetRecaptcha, toE164, firebaseEnabled } from 
 import Button from '../../components/Button.jsx'
 import Icon from '../../components/Icon.jsx'
 import { property } from '../../data/property.js'
+import { img } from '../../utils/img.js'
 import './auth.css'
 
 const COUNTRIES = [
@@ -104,7 +105,7 @@ export default function AuthScreen() {
 
   return (
     <div className="auth">
-      <div className="auth__hero">
+      <div className="auth__hero" style={{ backgroundImage: `url(${img('photo-1470337458703-46ad1756a187.jpg')})` }}>
         <div className="auth__hero-overlay" />
         <div className="auth__brand">
           <div className="auth__logo">

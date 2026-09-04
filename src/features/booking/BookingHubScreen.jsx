@@ -5,12 +5,13 @@ import Icon from '../../components/Icon.jsx'
 import ImageWithFallback from '../../components/ImageWithFallback.jsx'
 import TableReservationSheet from './TableReservationSheet.jsx'
 import './booking.css'
+import { img } from '../../utils/img.js'
 
 const OPTIONS = [
-  { id: 'rooms', title: 'Book a room', desc: 'Stay the night · from $129', icon: 'bed', image: 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=600&q=80', to: '/rooms' },
-  { id: 'service', title: 'Order room service', desc: 'In-room dining · 7am–2am', icon: 'fork', image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80', to: '/room-service' },
-  { id: 'table', title: 'Book a table', desc: 'Pub, fireside or rooftop', icon: 'glass', image: 'https://images.unsplash.com/photo-1551218808-94e220e084d2?w=600&q=80', action: 'table' },
-  { id: 'explore', title: 'Plan your night', desc: 'Nice things to do nearby', icon: 'location', image: 'https://images.unsplash.com/photo-1519677100203-a0e668c92439?w=600&q=80', to: '/explore' },
+  { id: 'rooms', title: 'Book a room', desc: 'Stay the night · from $129', icon: 'bed', image: img('photo-1611892440504-42a792e24d32.jpg'), to: '/rooms' },
+  { id: 'service', title: 'Order room service', desc: 'In-room dining · 7am–2am', icon: 'fork', image: img('photo-1414235077428-338989a2e8c0.jpg'), to: '/room-service' },
+  { id: 'table', title: 'Book a table', desc: 'Pub, fireside or rooftop', icon: 'glass', image: img('photo-1551218808-94e220e084d2.jpg'), action: 'table' },
+  { id: 'explore', title: 'Plan your night', desc: 'Nice things to do nearby', icon: 'location', image: img('photo-1519677100203-a0e668c92439.jpg'), to: '/explore' },
 ]
 
 export default function BookingHubScreen() {

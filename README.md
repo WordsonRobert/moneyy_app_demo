@@ -6,7 +6,9 @@ room from an interactive floor plan, ordering room service, reserving a table,
 and scrolling the hotel's own Instagram-style **reels** — all behind a
 **real phone-number sign-in**.
 
-Built with **React + Vite**. Dark, warm-luxe theme. Fully modular.
+Built with **React + Vite**. Dark, warm-luxe theme. Fully modular. Every photo
+ships in the repo (`public/images/`) — no third-party image CDN at runtime, so
+the whole app works offline once it's built.
 
 It runs two ways:
 

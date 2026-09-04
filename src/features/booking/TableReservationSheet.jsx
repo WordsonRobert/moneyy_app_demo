@@ -5,6 +5,7 @@ import Button from '../../components/Button.jsx'
 import Icon from '../../components/Icon.jsx'
 import { useBooking } from '../../context/BookingContext.jsx'
 import { useToast } from '../../context/ToastContext.jsx'
+import { img } from '../../utils/img.js'
 
 const TIMES = ['6:00 PM', '6:30 PM', '7:00 PM', '7:30 PM', '8:00 PM', '8:30 PM', '9:00 PM', '9:30 PM']
 const AREAS = [
@@ -33,7 +34,7 @@ export default function TableReservationSheet({ open, onClose }) {
       type: 'table',
       title: `Table for ${party} · ${areaLabel}`,
       subtitle: `${new Date(date).toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' })} · ${time}`,
-      image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=500&q=80',
+      image: img('photo-1414235077428-338989a2e8c0.jpg'),
       total: 0,
       party,
       time,
