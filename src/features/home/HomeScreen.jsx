@@ -119,8 +119,8 @@ export default function HomeScreen() {
             <div className="near__body">
               <h4>{p.name}</h4>
               <div className="near__meta">
-                <RatingStars value={p.rating || 4.5} />
-                {p.distance && <span className="faint">· {p.distance}</span>}
+                {p.rating ? <RatingStars value={p.rating} /> : null}
+                {p.distance && <span className="faint">{p.rating ? '· ' : ''}{p.distance}</span>}
               </div>
             </div>
           </div>
