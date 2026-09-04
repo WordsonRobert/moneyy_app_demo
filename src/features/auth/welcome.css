@@ -1,0 +1,62 @@
+.welcome {
+  min-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 22px;
+  background:
+    radial-gradient(120% 80% at 50% -10%, rgba(224, 185, 120, 0.14), transparent 60%),
+    var(--bg);
+}
+.welcome__card {
+  width: 100%;
+  max-width: 420px;
+}
+.welcome__logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 13px;
+  background: var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 22px;
+}
+.welcome__card h1 {
+  font-size: 30px;
+  line-height: 1.08;
+  margin: 6px 0 10px;
+}
+.welcome__sub {
+  margin-bottom: 26px;
+}
+.welcome__label {
+  display: block;
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+.welcome__input {
+  width: 100%;
+  height: 54px;
+  padding: 0 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  color: var(--text);
+  font-size: 17px;
+  outline: none;
+  transition: border 0.2s ease;
+}
+.welcome__input:focus {
+  border-color: var(--gold);
+}
+.welcome__phone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 20px;
+  font-size: 13px;
+  color: var(--text-faint);
+}

@@ -1,53 +1,55 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { useAuth } from './AuthContext.jsx'
+import {
+  watchBookings,
+  addBooking as addBookingSvc,
+  cancelBooking as cancelBookingSvc,
+  watchFavorites,
+  setFavorite,
+} from '../services/guestService.js'
 
 const BookingContext = createContext(null)
-const BOOK_KEY = 'lm.bookings'
-const FAV_KEY = 'lm.favorites'
 
-const load = (key, fallback) => {
-  try {
-    const raw = localStorage.getItem(key)
-    return raw ? JSON.parse(raw) : fallback
-  } catch {
-    return fallback
-  }
-}
-
+/**
+ * Bookings and saved rooms for the signed-in guest, backed by guestService
+ * (Firestore in real mode, per-uid localStorage in demo) so they follow the
+ * guest across devices. The room-service cart is intentionally in-memory only
+ * — it's a transient tray, not something to sync.
+ */
 export function BookingProvider({ children }) {
-  const [bookings, setBookings] = useState(() => load(BOOK_KEY, []))
-  const [favorites, setFavorites] = useState(() => load(FAV_KEY, []))
-  // Room-service cart: { [dishId]: qty }
-  const [cart, setCart] = useState({})
+  const { user } = useAuth()
+  const uid = user?.id || null
 
-  useEffect(() => {
-    try {
-      localStorage.setItem(BOOK_KEY, JSON.stringify(bookings))
-    } catch { /* ignore */ }
-  }, [bookings])
+  const [bookings, setBookings] = useState([])
+  const [favorites, setFavorites] = useState([])
+  const [cart, setCart] = useState({}) // { [dishId]: qty }
 
+  // Live subscriptions, re-bound whenever the guest changes (and cleared on logout).
   useEffect(() => {
-    try {
-      localStorage.setItem(FAV_KEY, JSON.stringify(favorites))
-    } catch { /* ignore */ }
-  }, [favorites])
+    if (!uid) {
+      setBookings([])
+      setFavorites([])
+      return
+    }
+    const unsubBookings = watchBookings(uid, setBookings)
+    const unsubFavorites = watchFavorites(uid, setFavorites)
+    return () => {
+      unsubBookings()
+      unsubFavorites()
+    }
+  }, [uid])
 
   const value = useMemo(
     () => ({
       bookings,
-      addBooking: (b) => {
-        const record = { id: 'bk_' + Date.now().toString(36), createdAt: Date.now(), status: 'Confirmed', ...b }
-        setBookings((prev) => [record, ...prev])
-        return record
-      },
-      cancelBooking: (id) =>
-        setBookings((prev) => prev.map((b) => (b.id === id ? { ...b, status: 'Cancelled' } : b))),
+      addBooking: (b) => addBookingSvc(uid, b),
+      cancelBooking: (id) => cancelBookingSvc(uid, id),
 
       favorites,
       isFavorite: (id) => favorites.includes(id),
-      toggleFavorite: (id) =>
-        setFavorites((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id])),
+      toggleFavorite: (id) => setFavorite(uid, id, !favorites.includes(id)),
 
-      // Room-service cart
+      // Room-service cart (in-memory)
       cart,
       cartCount: Object.values(cart).reduce((a, b) => a + b, 0),
       addToCart: (id) => setCart((c) => ({ ...c, [id]: (c[id] || 0) + 1 })),
@@ -59,7 +61,7 @@ export function BookingProvider({ children }) {
         }),
       clearCart: () => setCart({}),
     }),
-    [bookings, favorites, cart],
+    [bookings, favorites, cart, uid],
   )
 
   return <BookingContext.Provider value={value}>{children}</BookingContext.Provider>

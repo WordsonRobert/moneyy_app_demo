@@ -148,15 +148,16 @@ src/
 ├── App.jsx                  Routes + tabbed layout
 ├── components/              Reusable UI (Button, Sheet, Icon, BottomNav, …)
 ├── context/                 Global state
-│   ├── AuthContext.jsx        Firebase/demo sign-in + profile
+│   ├── AuthContext.jsx        sign-in identity + live profile / onboarding
 │   ├── BookingContext.jsx     bookings, favorites, room-service cart
 │   └── ToastContext.jsx       transient confirmations
 ├── services/                Side-effects & integrations
 │   ├── firebase.js            Firebase bootstrap (auto-detects config)
 │   ├── authService.js         phone OTP (Firebase → demo fallback)
+│   ├── guestService.js        per-guest profile, saved rooms & bookings
 │   ├── socialService.js       reel likes & comments (Firestore → localStorage)
 │   ├── geolocationService.js  GPS → IP → default location
-│   └── mapsService.js         Google Places + Maps deep links
+│   └── mapsService.js         Google Places → free OpenStreetMap → curated
 ├── hooks/useNearby.js         location + places, with graceful fallback
 ├── data/                    All content (rooms, menu, reels, facilities, …)
 ├── features/                One folder per screen
@@ -174,11 +175,17 @@ src/
 
 ## What's real vs. prototype
 
-**Real now:** phone-OTP sign-in, one-like-per-guest reel likes, live reel
-comments, location + Google Maps deep links, and persisted bookings/favorites/
-cart. **Still mocked:** payments, real-time room inventory, and supplier
-integrations — each isolated to `services/` so swapping in real APIs is a
-contained change.
+**Real now:** phone-OTP sign-in with a name-onboarding step; a per-guest profile,
+saved rooms and booking history that live under `users/{uid}` in Firestore and
+follow the guest to any device they sign in on; one-like-per-guest reel likes and
+live reel comments; free live nearby places (OpenStreetMap) + Google Maps deep
+links. The room-service cart is deliberately in-memory (a transient tray).
+**Still mocked:** payments, real-time room inventory, and supplier integrations —
+each isolated to `services/` so swapping in real APIs is a contained change.
+
+> **Updating the app?** If you change `firestore.rules`, re-publish them in the
+> Firebase console (Firestore → Rules → Publish) — the live rules are what's
+> enforced, and the `users/{uid}` tree is denied by default until they're in.
 
 ---
 

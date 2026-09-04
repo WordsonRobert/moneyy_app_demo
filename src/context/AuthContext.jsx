@@ -1,82 +1,74 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 import { firebaseEnabled, auth } from '../services/firebase.js'
+import { watchProfile, saveProfile } from '../services/guestService.js'
 
 const AuthContext = createContext(null)
-
-// Editable profile fields live per-user in localStorage, keyed by uid, in both
-// modes. Identity (uid/phone) comes from Firebase in real mode.
-const profileKey = (uid) => `lm.profile.${uid}`
 const DEMO_KEY = 'lm.user' // demo-mode identity (no Firebase)
 
-function loadProfile(uid) {
-  try {
-    const raw = localStorage.getItem(profileKey(uid))
-    return raw ? JSON.parse(raw) : {}
-  } catch {
-    return {}
-  }
-}
-
-function saveProfile(uid, profile) {
-  try {
-    localStorage.setItem(profileKey(uid), JSON.stringify(profile))
-  } catch {
-    /* ignore */
-  }
-}
-
-/** Assemble the app's user object from an identity + its stored profile. */
-function composeUser({ uid, phone }) {
-  const profile = loadProfile(uid)
-  const name = profile.name || 'Guest'
-  return {
-    id: uid,
-    phone,
-    name,
-    email: profile.email || '',
-    initial: name.trim().charAt(0).toUpperCase() || 'G',
-    membership: profile.membership || 'Ember Club',
-    joined: profile.joined || new Date().toISOString(),
-  }
-}
-
 // Demo mode: restore identity synchronously so a hard refresh on a protected
-// route doesn't flash the auth screen before the user is loaded.
-function initialDemoUser() {
+// route doesn't flash the auth screen before the guest is loaded.
+function initialDemoIdentity() {
   if (firebaseEnabled) return null
   try {
     const raw = localStorage.getItem(DEMO_KEY)
-    if (!raw) return null
-    const { uid, phone } = JSON.parse(raw)
-    return composeUser({ uid, phone })
+    return raw ? JSON.parse(raw) : null // { uid, phone }
   } catch {
     return null
   }
 }
 
-export function AuthProvider({ children }) {
-  const [user, setUser] = useState(initialDemoUser)
-  // In real mode we wait for Firebase to report the initial auth state before
-  // deciding whether to bounce to /auth; in demo mode we're ready immediately.
-  const [authReady, setAuthReady] = useState(!firebaseEnabled)
+/** Build the app's user object from an identity + its (async-loaded) profile. */
+function composeUser(identity, profile) {
+  if (!identity) return null
+  const name = profile.name || 'Guest'
+  return {
+    id: identity.uid,
+    phone: identity.phone,
+    name,
+    email: profile.email || '',
+    initial: (name.trim().charAt(0) || 'G').toUpperCase(),
+    membership: profile.membership || 'Ember Club',
+    joined: profile.joined || null,
+  }
+}
 
-  // Real mode: track Firebase auth state.
+export function AuthProvider({ children }) {
+  const [identity, setIdentity] = useState(initialDemoIdentity) // { uid, phone } | null
+  const [profile, setProfile] = useState({})
+  const [profileLoaded, setProfileLoaded] = useState(false)
+  // Whether the auth backend has reported its initial state yet.
+  const [authResolved, setAuthResolved] = useState(!firebaseEnabled)
+
+  // Real mode: track the Firebase identity.
   useEffect(() => {
     if (!firebaseEnabled) return
     const unsub = onAuthStateChanged(auth, (fbUser) => {
-      if (fbUser) {
-        const uid = fbUser.uid
-        const profile = loadProfile(uid)
-        if (!profile.joined) saveProfile(uid, { ...profile, joined: new Date().toISOString() })
-        setUser(composeUser({ uid, phone: fbUser.phoneNumber || '' }))
-      } else {
-        setUser(null)
-      }
-      setAuthReady(true)
+      setIdentity(fbUser ? { uid: fbUser.uid, phone: fbUser.phoneNumber || '' } : null)
+      setAuthResolved(true)
     })
     return () => unsub()
   }, [])
+
+  // Live profile for the current guest (follows them across devices in real mode).
+  useEffect(() => {
+    setProfileLoaded(false)
+    if (!identity?.uid) {
+      setProfile({})
+      setProfileLoaded(true)
+      return
+    }
+    const unsub = watchProfile(identity.uid, (p) => {
+      setProfile(p)
+      setProfileLoaded(true)
+    })
+    return () => unsub()
+  }, [identity?.uid])
+
+  const user = useMemo(() => composeUser(identity, profile), [identity, profile])
+  // "Ready" only once we know both the identity and (if signed in) the profile,
+  // so guards never flash the wrong screen.
+  const authReady = authResolved && profileLoaded
 
   const value = useMemo(
     () => ({
@@ -84,11 +76,10 @@ export function AuthProvider({ children }) {
       isAuthed: !!user,
       authReady,
       firebaseEnabled,
+      // Signed in, profile resolved, but the guest hasn't told us their name yet.
+      needsName: !!user && authReady && !profile.name,
 
-      /**
-       * Finish a DEMO-mode sign-in (no Firebase). Real mode signs in through
-       * Firebase and picks the user up via onAuthStateChanged instead.
-       */
+      /** Finish a DEMO-mode sign-in (no Firebase). Real mode uses Firebase auth state. */
       finalizeDemoUser(phone) {
         const uid = 'u_' + phone.replace(/\D/g, '').slice(-10)
         try {
@@ -96,27 +87,26 @@ export function AuthProvider({ children }) {
         } catch {
           /* ignore */
         }
-        const profile = loadProfile(uid)
-        if (!profile.joined) saveProfile(uid, { ...profile, joined: new Date().toISOString() })
-        setUser(composeUser({ uid, phone }))
+        setIdentity({ uid, phone })
       },
 
-      updateProfile(patch) {
-        setUser((prev) => {
-          if (!prev) return prev
-          const merged = {
-            name: patch.name ?? prev.name,
-            email: patch.email ?? prev.email,
-            membership: patch.membership ?? prev.membership,
-            joined: prev.joined,
-          }
-          saveProfile(prev.id, merged)
-          return {
-            ...prev,
-            ...merged,
-            initial: (merged.name || 'G').trim().charAt(0).toUpperCase() || 'G',
-          }
+      /** Save the guest's name (onboarding), seeding membership + join date. */
+      async saveName(name) {
+        if (!identity?.uid) return
+        await saveProfile(identity.uid, {
+          name: name.trim() || 'Guest',
+          membership: profile.membership || 'Ember Club',
+          joined: profile.joined || new Date().toISOString(),
         })
+      },
+
+      /** Update editable profile fields. */
+      async updateProfile(patch) {
+        if (!identity?.uid) return
+        const clean = {}
+        if (patch.name != null) clean.name = patch.name.trim() || 'Guest'
+        if (patch.email != null) clean.email = patch.email
+        if (Object.keys(clean).length) await saveProfile(identity.uid, clean)
       },
 
       async logout() {
@@ -128,11 +118,11 @@ export function AuthProvider({ children }) {
           } catch {
             /* ignore */
           }
-          setUser(null)
+          setIdentity(null)
         }
       },
     }),
-    [user, authReady],
+    [user, authReady, identity, profile],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

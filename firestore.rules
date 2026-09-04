@@ -1,17 +1,28 @@
 rules_version = '2';
 
-// Security rules for the reels social layer (likes + comments).
+// Security rules for Life Moments.
 // Paste these into Firebase Console → Firestore Database → Rules → Publish.
 //
 // Rules of thumb enforced here:
-//   • Anyone can READ likes/comments (the counts are public).
-//   • You must be SIGNED IN (phone auth) to like or comment.
+//   • A guest's profile, saved rooms and bookings live under users/{uid} and
+//     are private to that guest — only they can read or write their own tree.
+//   • Reel likes/comments are public to READ (the counts are shown to everyone)
+//     but require sign-in to write.
 //   • A like doc's id must equal your own uid — so one like per guest, and you
 //     can only add/remove YOUR like.
 //   • A comment must carry your uid and be a sane length; comments are not
 //     editable or deletable from the client.
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // Per-guest data: profile + saved rooms (on the user doc) and bookings.
+    match /users/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+
+      match /bookings/{bookingId} {
+        allow read, write: if request.auth != null && request.auth.uid == uid;
+      }
+    }
 
     match /reels/{reelId} {
       // The reel container doc itself isn't written by clients.

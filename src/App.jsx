@@ -1,9 +1,11 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { ToastProvider } from './context/ToastContext.jsx'
+import { useAuth } from './context/AuthContext.jsx'
 import AppLayout from './components/AppLayout.jsx'
 import RequireAuth from './components/RequireAuth.jsx'
 
 import AuthScreen from './features/auth/AuthScreen.jsx'
+import WelcomeScreen from './features/auth/WelcomeScreen.jsx'
 import HomeScreen from './features/home/HomeScreen.jsx'
 import ExploreScreen from './features/explore/ExploreScreen.jsx'
 import RoomsScreen from './features/rooms/RoomsScreen.jsx'
@@ -13,6 +15,20 @@ import ProfileScreen from './features/profile/ProfileScreen.jsx'
 import BookingsScreen from './features/bookings/BookingsScreen.jsx'
 import BookingHubScreen from './features/booking/BookingHubScreen.jsx'
 
+/** Sends signed-in guests who haven't set a name to onboarding first. */
+function RequireName({ children }) {
+  const { needsName } = useAuth()
+  if (needsName) return <Navigate to="/welcome" replace />
+  return children
+}
+
+/** Onboarding is only for guests who still need a name; otherwise skip it. */
+function OnboardingOnly({ children }) {
+  const { needsName } = useAuth()
+  if (!needsName) return <Navigate to="/" replace />
+  return children
+}
+
 export default function App() {
   return (
     <ToastProvider>
@@ -21,11 +37,25 @@ export default function App() {
           {/* Auth is outside the tabbed layout */}
           <Route path="/auth" element={<AuthScreen />} />
 
-          {/* Everything else requires a signed-in guest */}
+          {/* One-time name onboarding, gated to guests who still need it */}
+          <Route
+            path="/welcome"
+            element={
+              <RequireAuth>
+                <OnboardingOnly>
+                  <WelcomeScreen />
+                </OnboardingOnly>
+              </RequireAuth>
+            }
+          />
+
+          {/* Everything else requires a signed-in, named guest */}
           <Route
             element={
               <RequireAuth>
-                <AppLayout />
+                <RequireName>
+                  <AppLayout />
+                </RequireName>
               </RequireAuth>
             }
           >
