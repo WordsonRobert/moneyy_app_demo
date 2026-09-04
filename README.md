@@ -16,7 +16,8 @@ It runs two ways:
   clickable. OTP shows an on-screen code, likes & comments live in your browser.
 - **Live mode** — add a Firebase project and it flips on **real SMS OTP** (great
   with Indian +91 numbers) and **real, shared likes & comments** that add up
-  across everyone. Add a Google Maps key for live "things to do nearby".
+  across everyone. Nearby already gets **free, live** places via OpenStreetMap
+  — no key needed for that at all.
 
 Nothing about the code changes between the two — it detects what's configured
 and lights up automatically.
@@ -79,11 +80,21 @@ npm run preview
 > a prototype. The web config values are *not* secrets; they're meant to ship in
 > the browser. Access is protected by the Firestore rules + authorized domains.
 
-### 2) Google Maps — live "things to do nearby"
+### 2) Nearby places — free by default, no key needed
 
-Add `VITE_GOOGLE_MAPS_API_KEY` to `.env` (enable **Maps JavaScript API** +
-**Places API** in Google Cloud). Without it, Nearby uses a curated fallback list.
-Every place still deep-links to Google Maps.
+Nearby tries three sources, in order:
+
+1. **Google Places** — only if `VITE_GOOGLE_MAPS_API_KEY` is set. Richest data
+   (photos, ratings), but requires a Google Cloud **Blaze** billing account.
+2. **OpenStreetMap (Overpass API)** — used automatically otherwise. **Completely
+   free, no key, no signup, no billing, ever.** Real live place data, just
+   without photos/ratings (the UI hides those gracefully when absent).
+3. **Curated fallback list** — if both live sources are unreachable.
+
+Most people can just leave `VITE_GOOGLE_MAPS_API_KEY` blank forever and get real
+live places via OpenStreetMap for free. Every place — from any source — still
+deep-links to Google Maps to open (that's a plain URL, always free, no key
+needed either).
 
 ### 3) Reel videos
 

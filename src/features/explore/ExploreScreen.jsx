@@ -9,7 +9,7 @@ import RatingStars from '../../components/RatingStars.jsx'
 import './explore.css'
 
 export default function ExploreScreen() {
-  const { location, places, status, refresh } = useNearby({ preferGps: true })
+  const { location, places, status, source, refresh } = useNearby({ preferGps: true })
   const [cat, setCat] = useState('All')
   const [query, setQuery] = useState('')
 
@@ -24,7 +24,9 @@ export default function ExploreScreen() {
   const cityLabel = location?.city || 'Locating you…'
   const sourceText =
     status === 'live'
-      ? 'Live from Google Maps'
+      ? source === 'google'
+        ? 'Live from Google Maps'
+        : 'Live from OpenStreetMap'
       : status === 'loading'
         ? 'Finding your spot…'
         : `Curated near ${cityLabel}`
@@ -90,8 +92,8 @@ export default function ExploreScreen() {
               <div className="place__body">
                 <h4>{p.name}</h4>
                 <div className="place__meta">
-                  <RatingStars value={p.rating || 4.5} />
-                  {p.distance && <span className="faint">· {p.distance}</span>}
+                  {p.rating ? <RatingStars value={p.rating} /> : null}
+                  {p.distance && <span className="faint">{p.rating ? '· ' : ''}{p.distance}</span>}
                 </div>
                 <span className="place__open">
                   Open in Maps <Icon name="chevronRight" size={13} />
@@ -104,7 +106,7 @@ export default function ExploreScreen() {
 
       {status === 'curated' && (
         <p className="explore__hint container">
-          Add a Google Maps API key in <code>.env</code> to see live places around you.
+          Couldn't reach live place data right now — showing our curated picks instead.
         </p>
       )}
       <div style={{ height: 20 }} />

@@ -97,9 +97,100 @@ export async function searchNearby({ lat, lng }, { radius = 1500 } = {}) {
   })
 }
 
-/** Deep link to Google Maps search for a place near the guest. */
+/** Deep link to Google Maps search for a place near the guest. Free, no key, always available. */
 export function mapsSearchUrl(query, loc) {
   const q = encodeURIComponent(query)
   const near = loc ? `&center=${loc.lat},${loc.lng}` : ''
   return `https://www.google.com/maps/search/?api=1&query=${q}${near}`
+}
+
+/* ------------------------------------------------------------------ *
+ * OpenStreetMap (Overpass API) — free, no key, no billing, ever.
+ * Used automatically when no Google Maps key is configured.
+ * ------------------------------------------------------------------ */
+
+const OVERPASS_ENDPOINT = 'https://overpass-api.de/api/interpreter'
+
+const OSM_TAG_LABEL = [
+  [/^bar$|^pub$|^nightclub$/, 'Nightlife'],
+  [/^restaurant$|^fast_food$/, 'Restaurant'],
+  [/^cafe$/, 'Cafe'],
+  [/^attraction$|^viewpoint$/, 'Attraction'],
+  [/^gallery$|^museum$/, 'Culture'],
+  [/^park$/, 'Walk'],
+  [/^marketplace$/, 'Market'],
+]
+
+function labelForOsmTag(tag = '') {
+  for (const [re, label] of OSM_TAG_LABEL) if (re.test(tag)) return label
+  return 'Nearby'
+}
+
+/** Great-circle distance in meters between two lat/lng points. */
+function haversine(lat1, lng1, lat2, lng2) {
+  const R = 6371000
+  const toRad = (d) => (d * Math.PI) / 180
+  const dLat = toRad(lat2 - lat1)
+  const dLng = toRad(lng2 - lng1)
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2
+  return 2 * R * Math.asin(Math.sqrt(a))
+}
+
+/**
+ * Search for interesting places near a coordinate using OpenStreetMap data —
+ * completely free, no API key, no billing account, ever. Slightly less rich
+ * than Google Places (no photos/ratings — the UI falls back gracefully for
+ * both), and the public Overpass server is best-effort/rate-limited, so this
+ * is wrapped in a timeout and the caller falls back to the curated list.
+ *
+ * Docs: https://wiki.openstreetmap.org/wiki/Overpass_API
+ */
+export async function searchNearbyOSM({ lat, lng }, { radius = 1500, timeoutMs = 8000 } = {}) {
+  const query = `[out:json][timeout:20];
+(
+  node["amenity"~"^(restaurant|cafe|bar|pub|nightclub|fast_food)$"](around:${radius},${lat},${lng});
+  node["tourism"~"^(attraction|gallery|museum|viewpoint)$"](around:${radius},${lat},${lng});
+  node["leisure"="park"](around:${radius},${lat},${lng});
+  node["amenity"="marketplace"](around:${radius},${lat},${lng});
+);
+out body 30;`
+
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), timeoutMs)
+
+  let res
+  try {
+    res = await fetch(OVERPASS_ENDPOINT, {
+      method: 'POST',
+      body: 'data=' + encodeURIComponent(query),
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      signal: controller.signal,
+    })
+  } finally {
+    clearTimeout(timer)
+  }
+  if (!res.ok) throw new Error('overpass-' + res.status)
+  const data = await res.json()
+
+  return (data.elements || [])
+    .filter((el) => el.tags?.name)
+    .map((el) => {
+      const tag = el.tags.amenity || el.tags.tourism || el.tags.leisure || ''
+      const meters = haversine(lat, lng, el.lat, el.lon)
+      return {
+        id: 'osm_' + el.id,
+        name: el.tags.name,
+        category: labelForOsmTag(tag),
+        rating: 0,
+        image: '',
+        _meters: meters,
+        distance: metersToLabel(meters),
+        mapsQuery: el.tags.name,
+      }
+    })
+    .sort((a, b) => a._meters - b._meters)
+    .slice(0, 20)
+    .map(({ _meters, ...place }) => place)
 }
