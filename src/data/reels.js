@@ -1,19 +1,24 @@
 /**
  * Reels — the hotel's own advertisements, shown Instagram-style.
  *
- * Each reel supports either a looping video (`type: 'video'`) or an image with a
- * slow Ken-Burns pan (`type: 'image'`). Videos use small, freely-hosted sample
- * clips; if a clip fails to load the component falls back to the poster image,
- * so the reel always shows something.
+ * DEMO VIDEOS LIVE IN THE REPO: drop your clips into `public/reels/` as
+ * reel-1.mp4 … reel-5.mp4 (see public/reels/README.md). They're referenced with
+ * BASE_URL so they work both locally and on GitHub Pages (which serves the app
+ * under /<repo>/). Until a clip is added, each reel gracefully falls back to its
+ * poster image with a slow Ken-Burns pan, so the feed always looks alive.
  *
  * `cta` links a reel to a real action inside the app (book a room, order, etc.).
  */
+
+// Vite serves everything in public/ at BASE_URL; string URLs aren't rewritten
+// automatically, so we build them here.
+const clip = (file) => `${import.meta.env.BASE_URL}reels/${file}`
 
 export const reels = [
   {
     id: 'r1',
     type: 'video',
-    src: 'https://cdn.coverr.co/videos/coverr-pouring-a-cocktail-4881/1080p.mp4',
+    src: clip('reel-1.mp4'),
     poster: 'https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=800&q=80',
     handle: 'theemberhouse',
     headline: 'The pub never really closes',
@@ -26,8 +31,8 @@ export const reels = [
   },
   {
     id: 'r2',
-    type: 'image',
-    src: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80',
+    type: 'video',
+    src: clip('reel-2.mp4'),
     poster: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80',
     handle: 'theemberhouse',
     headline: 'Wake up in the Lantern King',
@@ -41,7 +46,7 @@ export const reels = [
   {
     id: 'r3',
     type: 'video',
-    src: 'https://cdn.coverr.co/videos/coverr-a-chef-cooking-in-a-restaurant-3163/1080p.mp4',
+    src: clip('reel-3.mp4'),
     poster: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80',
     handle: 'theemberhouse',
     headline: 'Dry-aged, flame-kissed',
@@ -54,8 +59,8 @@ export const reels = [
   },
   {
     id: 'r4',
-    type: 'image',
-    src: 'https://images.unsplash.com/photo-1533104816931-20fa691ff6ca?w=800&q=80',
+    type: 'video',
+    src: clip('reel-4.mp4'),
     poster: 'https://images.unsplash.com/photo-1533104816931-20fa691ff6ca?w=800&q=80',
     handle: 'theemberhouse',
     headline: 'Rooftop hours',
@@ -68,8 +73,8 @@ export const reels = [
   },
   {
     id: 'r5',
-    type: 'image',
-    src: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80',
+    type: 'video',
+    src: clip('reel-5.mp4'),
     poster: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80',
     handle: 'theemberhouse',
     headline: 'Book a table by the fire',

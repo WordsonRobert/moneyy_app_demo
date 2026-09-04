@@ -106,17 +106,18 @@
 }
 .auth__otp {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   margin: 8px 0 4px;
 }
 .auth__otp-box {
   flex: 1;
+  min-width: 0;
   aspect-ratio: 1;
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--r-md);
   color: var(--text);
-  font-size: 28px;
+  font-size: 26px;
   font-family: var(--font-display);
   text-align: center;
   outline: none;

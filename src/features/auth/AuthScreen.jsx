@@ -1,33 +1,41 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext.jsx'
+import { requestOtp, confirmOtp, resetRecaptcha, toE164, firebaseEnabled } from '../../services/authService.js'
 import Button from '../../components/Button.jsx'
 import Icon from '../../components/Icon.jsx'
 import { property } from '../../data/property.js'
 import './auth.css'
 
 const COUNTRIES = [
+  { code: '+91', flag: '🇮🇳' },
   { code: '+1', flag: '🇺🇸' },
   { code: '+44', flag: '🇬🇧' },
-  { code: '+91', flag: '🇮🇳' },
   { code: '+61', flag: '🇦🇺' },
   { code: '+971', flag: '🇦🇪' },
 ]
 
+// Real Firebase codes are 6 digits; the demo code is 4.
+const OTP_LEN = firebaseEnabled ? 6 : 4
+
 export default function AuthScreen() {
-  const { sendOtp, confirmOtp } = useAuth()
+  const { finalizeDemoUser } = useAuth()
   const navigate = useNavigate()
 
   const [step, setStep] = useState('phone') // phone | otp
   const [country, setCountry] = useState(COUNTRIES[0])
   const [phone, setPhone] = useState('')
   const [sending, setSending] = useState(false)
-  const [expected, setExpected] = useState('')
-  const [otp, setOtp] = useState(['', '', '', ''])
+  const [verifying, setVerifying] = useState(false)
+  const [pending, setPending] = useState(null) // { mode, confirmation?, code? }
+  const [otp, setOtp] = useState(() => Array(OTP_LEN).fill(''))
   const [error, setError] = useState('')
-  const otpRefs = [useRef(), useRef(), useRef(), useRef()]
+  const otpRefs = useRef([])
 
-  const fullPhone = `${country.code} ${phone}`
+  const e164 = toE164(country.code, phone)
+
+  // Reset any reCAPTCHA if the screen unmounts mid-flow.
+  useEffect(() => () => resetRecaptcha(), [])
 
   async function handleSend() {
     if (phone.replace(/\D/g, '').length < 6) {
@@ -36,35 +44,62 @@ export default function AuthScreen() {
     }
     setError('')
     setSending(true)
-    const { code } = await sendOtp(fullPhone)
-    setExpected(code)
-    setSending(false)
-    setStep('otp')
-    setTimeout(() => otpRefs[0].current?.focus(), 150)
+    try {
+      const result = await requestOtp(e164)
+      setPending(result)
+      setOtp(Array(OTP_LEN).fill(''))
+      setStep('otp')
+      setTimeout(() => otpRefs.current[0]?.focus(), 150)
+    } catch (err) {
+      setError(errorMessage(err))
+    } finally {
+      setSending(false)
+    }
   }
 
   function handleOtpChange(i, val) {
-    const digit = val.replace(/\D/g, '').slice(-1)
-    const next = [...otp]
-    next[i] = digit
-    setOtp(next)
+    const digits = val.replace(/\D/g, '')
     setError('')
-    if (digit && i < 3) otpRefs[i + 1].current?.focus()
+    if (digits.length > 1) {
+      // Handle paste of a full code.
+      const next = Array(OTP_LEN).fill('')
+      digits.slice(0, OTP_LEN).split('').forEach((d, k) => (next[k] = d))
+      setOtp(next)
+      otpRefs.current[Math.min(digits.length, OTP_LEN - 1)]?.focus()
+      return
+    }
+    const next = [...otp]
+    next[i] = digits.slice(-1)
+    setOtp(next)
+    if (digits && i < OTP_LEN - 1) otpRefs.current[i + 1]?.focus()
   }
 
   function handleOtpKey(i, e) {
-    if (e.key === 'Backspace' && !otp[i] && i > 0) otpRefs[i - 1].current?.focus()
+    if (e.key === 'Backspace' && !otp[i] && i > 0) otpRefs.current[i - 1]?.focus()
   }
 
-  function handleVerify() {
+  async function handleVerify() {
     const code = otp.join('')
-    if (code.length < 4) {
-      setError('Enter the 4-digit code')
+    if (code.length < OTP_LEN) {
+      setError(`Enter the ${OTP_LEN}-digit code`)
       return
     }
-    const ok = confirmOtp(fullPhone, code, expected)
-    if (ok) navigate('/', { replace: true })
-    else setError('That code didn’t match. Try again.')
+    setError('')
+    setVerifying(true)
+    try {
+      const { ok } = await confirmOtp({ ...pending, expected: pending?.code }, code)
+      if (ok) {
+        // Real mode: onAuthStateChanged signs the user in. Demo mode: finalize now.
+        if (pending?.mode === 'demo') finalizeDemoUser(e164)
+        navigate('/', { replace: true })
+      } else {
+        setError('That code didn’t match. Try again.')
+      }
+    } catch (err) {
+      setError(errorMessage(err))
+    } finally {
+      setVerifying(false)
+    }
   }
 
   return (
@@ -107,7 +142,7 @@ export default function AuthScreen() {
                 className="auth__input"
                 type="tel"
                 inputMode="numeric"
-                placeholder="555 018 2245"
+                placeholder="98765 43210"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSend()}
@@ -119,7 +154,10 @@ export default function AuthScreen() {
               {sending ? 'Sending…' : 'Send code'}
             </Button>
             <p className="auth__fine">
-              By continuing you agree to the House rules & privacy terms. This is a prototype — no real SMS is sent.
+              By continuing you agree to the House rules & privacy terms.{' '}
+              {firebaseEnabled
+                ? 'Standard SMS rates may apply.'
+                : 'This is a demo build — no real SMS is sent.'}
             </p>
           </div>
         ) : (
@@ -129,18 +167,18 @@ export default function AuthScreen() {
             </button>
             <h2>Enter the code</h2>
             <p className="muted auth__sub">
-              Sent to <strong style={{ color: 'var(--text)' }}>{fullPhone}</strong>
+              Sent to <strong style={{ color: 'var(--text)' }}>{e164}</strong>
             </p>
 
             <div className="auth__otp">
               {otp.map((d, i) => (
                 <input
                   key={i}
-                  ref={otpRefs[i]}
+                  ref={(el) => (otpRefs.current[i] = el)}
                   className="auth__otp-box"
                   type="tel"
                   inputMode="numeric"
-                  maxLength={1}
+                  maxLength={OTP_LEN}
                   value={d}
                   onChange={(e) => handleOtpChange(i, e.target.value)}
                   onKeyDown={(e) => handleOtpKey(i, e)}
@@ -149,22 +187,38 @@ export default function AuthScreen() {
             </div>
             {error && <p className="auth__error">{error}</p>}
 
-            <div className="auth__demo">
-              <Icon name="sparkle" size={15} color="var(--gold)" />
-              <span>
-                Demo code: <strong>{expected}</strong> (or <strong>1234</strong>)
-              </span>
-            </div>
+            {pending?.mode === 'demo' && (
+              <div className="auth__demo">
+                <Icon name="sparkle" size={15} color="var(--gold)" />
+                <span>
+                  Demo code: <strong>{pending.code}</strong> (or <strong>1234</strong>)
+                </span>
+              </div>
+            )}
 
-            <Button full size="lg" onClick={handleVerify} icon="check" style={{ marginTop: 18 }}>
-              Verify & continue
+            <Button full size="lg" onClick={handleVerify} disabled={verifying} icon="check" style={{ marginTop: 18 }}>
+              {verifying ? 'Verifying…' : 'Verify & continue'}
             </Button>
-            <button className="auth__resend" onClick={handleSend}>
-              Didn’t get it? Resend code
+            <button className="auth__resend" onClick={handleSend} disabled={sending}>
+              {sending ? 'Sending…' : 'Didn’t get it? Resend code'}
             </button>
           </div>
         )}
       </div>
+
+      {/* Invisible reCAPTCHA mount point for Firebase Phone Auth. */}
+      <div id="recaptcha-container" />
     </div>
   )
+}
+
+function errorMessage(err) {
+  const code = err?.code || ''
+  if (code.includes('invalid-verification-code')) return 'That code didn’t match. Try again.'
+  if (code.includes('code-expired')) return 'That code expired. Tap resend.'
+  if (code.includes('invalid-phone-number')) return 'That phone number looks off. Check it and retry.'
+  if (code.includes('too-many-requests')) return 'Too many attempts. Give it a few minutes.'
+  if (code.includes('quota-exceeded')) return 'SMS limit reached for now. Try again later.'
+  if (code.includes('captcha')) return 'Verification check failed. Reload and try again.'
+  return 'Something went wrong sending the code. Try again.'
 }

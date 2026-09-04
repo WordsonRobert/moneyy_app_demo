@@ -1,0 +1,36 @@
+rules_version = '2';
+
+// Security rules for the reels social layer (likes + comments).
+// Paste these into Firebase Console → Firestore Database → Rules → Publish.
+//
+// Rules of thumb enforced here:
+//   • Anyone can READ likes/comments (the counts are public).
+//   • You must be SIGNED IN (phone auth) to like or comment.
+//   • A like doc's id must equal your own uid — so one like per guest, and you
+//     can only add/remove YOUR like.
+//   • A comment must carry your uid and be a sane length; comments are not
+//     editable or deletable from the client.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /reels/{reelId} {
+      // The reel container doc itself isn't written by clients.
+      allow read: if true;
+
+      match /likes/{uid} {
+        allow read: if true;
+        allow create, delete: if request.auth != null && request.auth.uid == uid;
+      }
+
+      match /comments/{commentId} {
+        allow read: if true;
+        allow create: if request.auth != null
+          && request.resource.data.uid == request.auth.uid
+          && request.resource.data.text is string
+          && request.resource.data.text.size() > 0
+          && request.resource.data.text.size() <= 500;
+        allow update, delete: if false;
+      }
+    }
+  }
+}

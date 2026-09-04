@@ -213,3 +213,87 @@
   padding: 11px 18px;
   border-radius: var(--r-pill);
 }
+
+/* --- Comments sheet --- */
+.reel-comments {
+  min-height: 180px;
+  max-height: 52vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.reel-comments__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+  padding: 34px 20px;
+  color: var(--text-faint);
+}
+.reel-comments__empty p { font-size: 14px; max-width: 240px; }
+.reel-comments__list {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.reel-comment {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.reel-comment__avatar {
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--surface-hi);
+  color: var(--gold);
+  display: grid;
+  place-items: center;
+  font-weight: 600;
+  font-size: 15px;
+}
+.reel-comment__body { flex: 1; min-width: 0; }
+.reel-comment__body > p { margin: 0; display: flex; align-items: baseline; gap: 8px; }
+.reel-comment__body strong { font-size: 14px; }
+.reel-comment__time { font-size: 12px; color: var(--text-faint); }
+.reel-comment__text { margin-top: 3px !important; font-size: 14px; color: var(--text); line-height: 1.4; word-break: break-word; }
+
+.reel-comments__compose {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding-top: 14px;
+  margin-top: 6px;
+  border-top: 1px solid var(--line);
+}
+.reel-comments__input {
+  flex: 1;
+  min-width: 0;
+  height: 44px;
+  padding: 0 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--text);
+  font-size: 15px;
+  outline: none;
+}
+.reel-comments__input:focus { border-color: var(--gold); }
+.reel-comments__send {
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: var(--gold);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.1s ease;
+}
+.reel-comments__send:active { transform: scale(0.94); }
+.reel-comments__send:disabled { opacity: 0.4; cursor: default; }

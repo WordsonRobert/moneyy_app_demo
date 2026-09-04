@@ -174,3 +174,26 @@ img {
 .safe-bottom {
   padding-bottom: env(safe-area-inset-bottom, 0);
 }
+
+/* Auth splash — shown while Firebase restores the session (real mode). */
+.auth-splash {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+}
+.auth-splash__mark {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 2px solid var(--surface-hi);
+  border-top-color: var(--gold);
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Keep Firebase's reCAPTCHA badge from covering the bottom nav. */
+.grecaptcha-badge { visibility: hidden; }
