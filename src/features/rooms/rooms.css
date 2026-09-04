@@ -1,0 +1,354 @@
+.rooms__hero {
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  margin-bottom: 6px;
+}
+.rooms__hero-img {
+  width: 100%;
+  height: 180px;
+}
+.rooms__hero-body {
+  padding: 14px 16px 18px;
+}
+.rooms__hero-body h2 {
+  font-size: 22px;
+  margin: 8px 0 6px;
+}
+.rooms__hero-body p {
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.rooms__facilities {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 0 20px;
+}
+.fac-chip {
+  flex-shrink: 0;
+  width: 130px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.fac-chip strong {
+  font-size: 13.5px;
+  margin-top: 6px;
+}
+.fac-chip span {
+  font-size: 11.5px;
+  color: var(--text-faint);
+}
+
+.rooms__tabs {
+  display: flex;
+  gap: 10px;
+  margin: 26px 20px 16px;
+}
+.rooms__tabs button {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  border-radius: var(--r-md);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--text-dim);
+  font-weight: 600;
+  font-size: 14px;
+}
+.rooms__tabs button.is-active {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #241a0d;
+}
+
+.rooms__list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.room-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.room-card__media {
+  position: relative;
+  cursor: pointer;
+}
+.room-card__img {
+  width: 100%;
+  height: 190px;
+}
+.room-card__fav {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(15, 13, 11, 0.55);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.room-card__size {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text);
+  background: rgba(15, 13, 11, 0.6);
+  backdrop-filter: blur(6px);
+  padding: 5px 10px;
+  border-radius: var(--r-pill);
+}
+.room-card__body {
+  padding: 15px 16px 16px;
+}
+.room-card__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+.room-card__row h4 {
+  font-size: 18px;
+}
+.room-card__price {
+  font-family: var(--font-display);
+  font-size: 19px;
+  color: var(--gold);
+  white-space: nowrap;
+}
+.room-card__price small {
+  font-size: 11px;
+  color: var(--text-faint);
+  font-weight: 400;
+}
+.room-card__body > p {
+  font-size: 13px;
+  margin: 4px 0 12px;
+}
+.room-card__facs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 10px;
+  margin-bottom: 16px;
+}
+.room-card__facs span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.room-card__actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* Room detail sheet */
+.rd__photos {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  margin-bottom: 16px;
+}
+.rd__photo {
+  flex-shrink: 0;
+  width: 260px;
+  height: 180px;
+  border-radius: var(--r-md);
+}
+.rd__facts {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+}
+.rd__facts span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.rd__desc {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-dim);
+}
+.rd__h {
+  font-size: 16px;
+  margin: 18px 0 12px;
+}
+.rd__facilities {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.rd__fac {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 12px 14px;
+  font-size: 13px;
+}
+.rd__cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+.rd__price {
+  font-family: var(--font-display);
+  font-size: 26px;
+  color: var(--gold);
+}
+.rd__price small {
+  font-size: 12px;
+  color: var(--text-faint);
+}
+
+/* Room booking sheet */
+.rb__room {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.rb__img {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--r-md);
+  flex-shrink: 0;
+}
+.rb__room h4 {
+  font-size: 17px;
+}
+.rb__room p {
+  font-size: 13px;
+  margin: 3px 0 0;
+}
+.rb__unit {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--gold);
+  background: rgba(224, 185, 120, 0.1);
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+}
+.rb__dates {
+  display: flex;
+  gap: 12px;
+}
+.rb__field {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.rb__field span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+.rb__field input {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  color: var(--text);
+  padding: 13px 14px;
+  font-size: 14px;
+  outline: none;
+  color-scheme: dark;
+}
+.rb__guests {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 18px;
+}
+.rb__guests > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.rb__stepper {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  padding: 6px 14px;
+}
+.rb__stepper button {
+  font-size: 20px;
+  color: var(--gold);
+  width: 24px;
+}
+.rb__stepper strong {
+  font-size: 16px;
+  min-width: 18px;
+  text-align: center;
+}
+.rb__cap {
+  font-size: 12px;
+  color: var(--text-faint);
+  margin: 6px 0 0;
+}
+.rb__summary {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 16px;
+  margin: 20px 0;
+  font-size: 14px;
+}
+.rb__total {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  font-family: var(--font-display);
+  font-size: 20px;
+}
+.rb__total span:last-child {
+  color: var(--gold);
+}
+.rb__fine {
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-faint);
+  margin: 12px 0 0;
+}

@@ -1,0 +1,40 @@
+.screen-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px 12px;
+  background: linear-gradient(to bottom, var(--bg) 78%, rgba(15, 13, 11, 0));
+}
+.screen-header--t {
+  background: transparent;
+}
+.screen-header__back {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  flex-shrink: 0;
+}
+.screen-header__titles {
+  flex: 1;
+  min-width: 0;
+}
+.screen-header__titles h3 {
+  font-size: 19px;
+  line-height: 1.15;
+}
+.screen-header__titles span {
+  font-size: 12.5px;
+  color: var(--text-dim);
+}
+.screen-header__right {
+  flex-shrink: 0;
+}

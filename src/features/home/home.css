@@ -1,0 +1,227 @@
+.home {
+  padding-bottom: 10px;
+}
+.home__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 6px;
+}
+.home__loc {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+.home__bell {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.home__dot {
+  position: absolute;
+  top: 10px;
+  right: 11px;
+  width: 8px;
+  height: 8px;
+  background: var(--gold);
+  border-radius: 50%;
+  border: 2px solid var(--surface);
+}
+.home__greet {
+  margin: 14px 0 18px;
+}
+.home__greet h1 {
+  font-size: 32px;
+  line-height: 1.08;
+  margin-top: 6px;
+}
+.home__wave {
+  font-family: var(--font-body);
+}
+.home__search {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: calc(100% - 40px);
+  margin: 0 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 15px 16px;
+  color: var(--text-faint);
+  font-size: 14px;
+}
+
+.home__quick {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  padding: 22px 20px 4px;
+}
+.quick {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  width: 62px;
+}
+.quick__icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease, border 0.2s ease;
+}
+.quick:active .quick__icon {
+  transform: scale(0.94);
+  border-color: var(--gold-soft);
+}
+.quick span {
+  font-size: 12px;
+  color: var(--text-dim);
+  font-weight: 500;
+}
+
+.home__featured {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  padding: 0 20px;
+}
+.feat {
+  position: relative;
+  flex-shrink: 0;
+  width: 220px;
+  height: 280px;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.feat__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.feat__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(15, 13, 11, 0.9) 8%, rgba(15, 13, 11, 0) 55%);
+}
+.feat__body {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  padding: 18px;
+}
+.feat__accent {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--gold);
+  font-weight: 700;
+}
+.feat__body h4 {
+  font-size: 22px;
+  margin: 6px 0 3px;
+}
+.feat__body p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.home__happen {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 0 20px;
+}
+.happen {
+  flex-shrink: 0;
+  width: 250px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  display: flex;
+}
+.happen__img {
+  width: 78px;
+  flex-shrink: 0;
+}
+.happen__body {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.happen__body h4 {
+  font-size: 15px;
+  font-family: var(--font-body);
+  font-weight: 600;
+}
+.happen__body span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--text-faint);
+  margin-top: 5px;
+}
+
+.home__nearby-note {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--text-dim);
+  margin: -6px 0 12px;
+}
+.home__nearby {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  padding: 0 20px;
+}
+.near {
+  flex-shrink: 0;
+  width: 160px;
+}
+.near__img {
+  width: 160px;
+  height: 120px;
+  border-radius: var(--r-md);
+}
+.near__body h4 {
+  font-size: 15px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  margin: 10px 0 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.near__meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}

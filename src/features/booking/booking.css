@@ -1,0 +1,185 @@
+.hub__intro {
+  margin: 8px 0 20px;
+}
+.hub__intro h1 {
+  font-size: 28px;
+  line-height: 1.1;
+  margin-top: 6px;
+}
+.hub__grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.hub__card {
+  position: relative;
+  height: 130px;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  text-align: left;
+  border: 1px solid var(--line);
+}
+.hub__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.hub__scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(15, 13, 11, 0.9) 30%, rgba(15, 13, 11, 0.35) 100%);
+}
+.hub__badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: rgba(15, 13, 11, 0.6);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hub__body {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+}
+.hub__body h4 {
+  font-size: 19px;
+  margin-bottom: 3px;
+}
+.hub__body p {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin: 0;
+}
+.hub__go {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hub__help {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 16px;
+  margin-top: 20px;
+}
+.hub__help strong {
+  display: block;
+  font-size: 14px;
+}
+.hub__help span {
+  font-size: 12.5px;
+  color: var(--text-dim);
+}
+
+/* Table reservation sheet */
+.tr__label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 18px 0 10px;
+}
+.tr__label:first-child {
+  margin-top: 4px;
+}
+.tr__date {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  color: var(--text);
+  padding: 13px 14px;
+  font-size: 14px;
+  outline: none;
+  color-scheme: dark;
+}
+.tr__times {
+  display: flex;
+  gap: 9px;
+  overflow-x: auto;
+}
+.tr__time {
+  flex-shrink: 0;
+  padding: 10px 15px;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--text-dim);
+  font-size: 13px;
+  font-weight: 500;
+}
+.tr__time.is-active {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #241a0d;
+  font-weight: 600;
+}
+.tr__party {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 12px 20px;
+}
+.tr__party button {
+  font-size: 22px;
+  color: var(--gold);
+  width: 28px;
+}
+.tr__party strong {
+  font-size: 15px;
+}
+.tr__areas {
+  display: flex;
+  gap: 10px;
+}
+.tr__area {
+  flex: 1;
+  text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 13px;
+}
+.tr__area.is-active {
+  border-color: var(--gold);
+  background: rgba(224, 185, 120, 0.08);
+}
+.tr__area strong {
+  display: block;
+  font-size: 13.5px;
+}
+.tr__area span {
+  font-size: 11px;
+  color: var(--text-faint);
+}
+.tr__fine {
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-faint);
+  margin: 12px 0 0;
+}

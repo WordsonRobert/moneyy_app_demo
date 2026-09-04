@@ -1,0 +1,176 @@
+:root {
+  --bg: #0f0d0b;
+  --bg-elevated: #191512;
+  --surface: #1f1a16;
+  --surface-hi: #2a231d;
+  --line: #332b23;
+  --gold: #e0b978;
+  --gold-soft: #c99a5b;
+  --text: #f4efe8;
+  --text-dim: #b8ab9b;
+  --text-faint: #7d7264;
+  --danger: #e0736b;
+  --success: #8fbf82;
+
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 22px;
+  --r-xl: 30px;
+  --r-pill: 999px;
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+
+  --shadow-card: 0 10px 30px -12px rgba(0, 0, 0, 0.7);
+  --maxw: 480px;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  background: #000;
+  color: var(--text);
+  overscroll-behavior-y: none;
+}
+
+/* The whole app lives inside a phone-width column, centered on desktop. */
+#root {
+  display: flex;
+  justify-content: center;
+  background: radial-gradient(120% 80% at 50% 0%, #1a1512 0%, #000 70%);
+}
+
+.app-shell {
+  width: 100%;
+  max-width: var(--maxw);
+  min-height: 100%;
+  background: var(--bg);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 80px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+}
+
+.app-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+input,
+textarea,
+select {
+  font-family: inherit;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+/* Utility */
+.container {
+  padding: 0 20px;
+}
+.stack > * + * {
+  margin-top: 16px;
+}
+.row {
+  display: flex;
+  align-items: center;
+}
+.gap-8 { gap: 8px; }
+.gap-12 { gap: 12px; }
+.gap-16 { gap: 16px; }
+.muted { color: var(--text-dim); }
+.faint { color: var(--text-faint); }
+.gold { color: var(--gold); }
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gold-soft);
+}
+.section-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: 26px 0 14px;
+}
+.section-title h3 {
+  font-size: 20px;
+}
+.link-more {
+  font-size: 13px;
+  color: var(--text-dim);
+  font-weight: 500;
+}
+.hide-scroll::-webkit-scrollbar { display: none; }
+
+/* Animations */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeUp 0.4s ease both; }
+
+@keyframes pulseSoft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.skeleton {
+  background: linear-gradient(90deg, var(--surface) 25%, var(--surface-hi) 50%, var(--surface) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: var(--r-md);
+}
+@keyframes shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}

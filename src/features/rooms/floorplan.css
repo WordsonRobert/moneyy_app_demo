@@ -1,0 +1,125 @@
+.fp__floors {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.fp__floor-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 12px 6px;
+  border-radius: var(--r-md);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--text-dim);
+  transition: all 0.18s ease;
+}
+.fp__floor-btn strong {
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: var(--text);
+}
+.fp__floor-btn span {
+  font-size: 10.5px;
+}
+.fp__floor-btn.is-active {
+  background: rgba(224, 185, 120, 0.1);
+  border-color: var(--gold-soft);
+}
+.fp__floor-btn.is-active strong {
+  color: var(--gold);
+}
+.fp__note {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin: 0 0 12px;
+}
+.fp__canvas {
+  background: var(--bg-elevated);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: 12px;
+}
+.fp__outline {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 0.8;
+}
+.fp__corridor {
+  fill: rgba(255, 255, 255, 0.02);
+}
+.fp__amenity {
+  stroke-width: 0.5;
+}
+.fp__amenity--amenity {
+  fill: rgba(224, 185, 120, 0.1);
+  stroke: var(--gold-soft);
+}
+.fp__amenity--core {
+  fill: rgba(255, 255, 255, 0.04);
+  stroke: var(--text-faint);
+  stroke-dasharray: 1.5 1;
+}
+.fp__amenity-label {
+  fill: var(--text-dim);
+  font-size: 3px;
+  text-anchor: middle;
+  font-family: var(--font-body);
+  font-weight: 600;
+}
+.fp__unit {
+  transition: opacity 0.2s ease;
+}
+.fp__unit.is-open {
+  cursor: pointer;
+}
+.fp__unit.is-open:active rect {
+  fill: rgba(143, 191, 130, 0.32);
+}
+.fp__unit-num {
+  fill: var(--text);
+  font-size: 3.6px;
+  font-weight: 700;
+  text-anchor: middle;
+  font-family: var(--font-body);
+}
+.fp__unit-type {
+  fill: var(--text-dim);
+  font-size: 2.8px;
+  text-anchor: middle;
+  font-family: var(--font-body);
+}
+.fp__unit-price {
+  fill: var(--gold);
+  font-size: 2.9px;
+  font-weight: 700;
+  text-anchor: middle;
+  font-family: var(--font-body);
+}
+.fp__legend {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin: 14px 0 4px;
+}
+.fp__legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.fp__legend i {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  display: inline-block;
+}
+.fp__tip {
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-faint);
+  margin: 6px 0 0;
+}
